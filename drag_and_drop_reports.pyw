@@ -135,8 +135,7 @@ def preprocess_lines(lines: List[str]) -> List[str]:
 
     Behavior:
     - Any line containing FORMFEED_MARKER is removed.
-    - The very next line after such a marker is also removed
-      (assumed to be the original "Page X of Y" footer).
+    - Any line containing PAGE and OF is removed (Page X of Y)
     - Remaining lines are returned as a flat list, preserving order.
 
     Args:
@@ -149,12 +148,10 @@ def preprocess_lines(lines: List[str]) -> List[str]:
     skip_next_footer_line = False
 
     for line in lines:
-        if skip_next_footer_line:
-            skip_next_footer_line = False
+        if FORMFEED_MARKER in line:
             continue
 
-        if FORMFEED_MARKER in line:
-            skip_next_footer_line = True
+        if "PAGE" and "OF" in line.upper():
             continue
 
         cleaned_lines.append(line)
